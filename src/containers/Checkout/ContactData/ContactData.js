@@ -93,7 +93,6 @@ class ContactData extends Component {
       }
     },
     formIsValid: false,
-    loading: false
   }
 
   checkValidity(value, rules) {
@@ -183,7 +182,7 @@ class ContactData extends Component {
           disabled={!this.state.formIsValid}>ORDER</Button>
       </form>
     );
-    if (this.state.loading) {
+    if (this.props.loading) {
       form = (
         <Spinner></Spinner>
       );
@@ -201,6 +200,7 @@ const mapStateToProps = state => {
   return {
     ingredients: state.ingredients,
     price: state.totalPrice,
+    loading: state.loading,
   };
 };
 
