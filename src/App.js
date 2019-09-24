@@ -1,45 +1,46 @@
-import React, { useEffect } from 'react';
+import React, { Suspense, useEffect } from 'react';
 import { Route, Switch, withRouter, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import Logout from './containers/Auth/Logout/Logout';
 import BurgerBuilder from './containers/BurgerBuilder/BurgerBuilder';
-import asyncComponent from './hoc/asyncComponent/asyncComponent';
 import Layout from './hoc/Layout/Layout';
 import * as actions from './store/actions/index';
 
-const asyncAuth = asyncComponent(() => {
+const Auth = React.lazy(() => {
   return import('./containers/Auth/Auth');
 });
 
-const asyncCheckout = asyncComponent(() => {
+const Checkout = React.lazy(() => {
   return import('./containers/Checkout/Checkout');
 });
 
-const asyncOrders = asyncComponent(() => {
+const Orders = React.lazy(() => {
   return import('./containers/Orders/Orders');
 });
 
 const App = props => {
+  const { isAuthenticated, onTryAutoSignup } = props;
+
   useEffect(() => {
-    props.onTryAutoSignup();
-  }, [props]);
+    onTryAutoSignup();
+  }, [onTryAutoSignup]);
 
   let routes = (
     <Switch>
-      <Route path='/auth' component={asyncAuth}></Route>
+      <Route path='/auth' render={() => <Auth></Auth>}></Route>
       <Route path='/' exact component={BurgerBuilder}></Route>
       <Redirect to='/'></Redirect>
     </Switch>
   );
 
-  if (props.isAuthenticated) {
+  if (isAuthenticated) {
     routes = (
       <Switch>
-        <Route path='/auth' component={asyncAuth}></Route>
+        <Route path='/auth' render={() => <Auth></Auth>}></Route>
         <Route path='/logout' component={Logout}></Route>
-        <Route path='/checkout' component={asyncCheckout}></Route>
-        <Route path='/orders' component={asyncOrders}></Route>
+        <Route path='/checkout' render={() => <Checkout></Checkout>}></Route>
+        <Route path='/orders' render={() => <Orders></Orders>}></Route>
         <Route path='/' exact component={BurgerBuilder}></Route>
         <Redirect to='/'></Redirect>
       </Switch>
@@ -49,7 +50,9 @@ const App = props => {
   return (
     <div>
       <Layout>
-        {routes}
+        <Suspense fallback={<p>Loading...</p>}>
+          {routes}
+        </Suspense>
       </Layout>
     </div>
   );
