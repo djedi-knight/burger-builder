@@ -1,5 +1,5 @@
 import React, { Suspense, useEffect } from 'react';
-import { Route, Switch, withRouter, Redirect } from 'react-router-dom';
+import { Redirect, Route, Switch, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import Logout from './containers/Auth/Logout/Logout';
@@ -28,7 +28,7 @@ const App = props => {
 
   let routes = (
     <Switch>
-      <Route path='/auth' render={() => <Auth></Auth>}></Route>
+      <Route path='/auth' render={props => <Auth {...props}></Auth>}></Route>
       <Route path='/' exact component={BurgerBuilder}></Route>
       <Redirect to='/'></Redirect>
     </Switch>
@@ -37,10 +37,10 @@ const App = props => {
   if (isAuthenticated) {
     routes = (
       <Switch>
-        <Route path='/auth' render={() => <Auth></Auth>}></Route>
+        <Route path='/auth' render={props => <Auth {...props}></Auth>}></Route>
         <Route path='/logout' component={Logout}></Route>
-        <Route path='/checkout' render={() => <Checkout></Checkout>}></Route>
-        <Route path='/orders' render={() => <Orders></Orders>}></Route>
+        <Route path='/checkout' render={props => <Checkout {...props}></Checkout>}></Route>
+        <Route path='/orders' render={props => <Orders {...props}></Orders>}></Route>
         <Route path='/' exact component={BurgerBuilder}></Route>
         <Redirect to='/'></Redirect>
       </Switch>

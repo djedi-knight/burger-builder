@@ -1,42 +1,41 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { Route, Redirect } from 'react-router-dom';
 
 import CheckoutSummary from '../../components/Order/CheckoutSummary/CheckoutSummary';
 import ContactData from './ContactData/ContactData';
 
-class Checkout extends Component {
-  checkoutCancelledHandler = () => {
-    this.props.history.goBack();
+const Checkout = props => {
+  const checkoutCancelledHandler = () => {
+    props.history.goBack();
   }
 
-  checkoutContinuedHandler = () => {
-    this.props.history.replace('/checkout/contact-data');
+  const checkoutContinuedHandler = () => {
+    props.history.replace('/checkout/contact-data');
   }
 
-  render() {
-    let summary = (
-      <Redirect to='/'></Redirect>
+  let summary = (
+    <Redirect to='/'></Redirect>
+  );
+  if (props.ings) {
+    const purchasedRedirect = props.purchased ? <Redirect to='/'></Redirect> : null;
+    summary = (
+      <div>
+        {purchasedRedirect}
+        <CheckoutSummary
+          ingredients={props.ings}
+          checkoutCancelled={checkoutCancelledHandler}
+          checkoutContinued={checkoutContinuedHandler}
+        ></CheckoutSummary>
+        <Route
+          path={props.match.path + '/contact-data'}
+          component={ContactData}
+        ></Route>
+      </div>
     );
-    if (this.props.ings) {
-      const purchasedRedirect = this.props.purchased ? <Redirect to='/'></Redirect> : null;
-      summary = (
-        <div>
-          {purchasedRedirect}
-          <CheckoutSummary
-            ingredients={this.props.ings}
-            checkoutCancelled={this.checkoutCancelledHandler}
-            checkoutContinued={this.checkoutContinuedHandler}
-          ></CheckoutSummary>
-          <Route
-            path={this.props.match.path + '/contact-data'}
-            component={ContactData}
-          ></Route>
-        </div>
-      );
-    }
-    return summary;
   }
+
+  return summary;
 }
 
 const mapStateToProps = state => {
