@@ -2,7 +2,7 @@ import React from 'react';
 
 import styles from './Order.module.css';
 
-const order = (props) => {
+const Order = props => {
   const ingredients = [];
   let ingredientName;
   for (ingredientName in props.ingredients) {
@@ -35,4 +35,4 @@ const order = (props) => {
   );
 };
 
-export default order;
+export default Order;
